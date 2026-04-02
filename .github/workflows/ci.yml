@@ -187,12 +187,17 @@ jobs:
             sed -i "s/using openfhe_julia_jll: libopenfhe_julia/#using openfhe_julia_jll: libopenfhe_julia/" test/OpenFHE.jl/src/OpenFHE.jl
             sed -i "s/const libopenfhe_julia_path = @load_preference(\"libopenfhe_julia\", libopenfhe_julia)/const libopenfhe_julia_path = @load_preference(\"libopenfhe_julia\")#, libopenfhe_julia)/" test/OpenFHE.jl/src/OpenFHE.jl
           fi
-      - name: Run downstream Julia tests
+      - name: Instantiate downstream Julia package
         if: ${{ matrix.os == 'ubuntu-latest' }}
         shell: julia --color=yes --project=test/OpenFHE.jl {0}
         run: |
           using Pkg
           Pkg.instantiate()
+      - name: Run downstream Julia tests
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        shell: julia --color=yes --project=test/OpenFHE.jl {0}
+        run: |
+          using Pkg
 
           using OpenFHE
           @show OpenFHE.libopenfhe_julia_path
